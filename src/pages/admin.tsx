@@ -1,13 +1,13 @@
+import AdminLayout from "@/components/layout/AdminLayout";
 import type { NextPageWithLayout } from "./_app";
 import { ReactElement } from "react";
-import UserLayout from "@/components/layout/UserLayout";
 
 const Page: NextPageWithLayout = () => {
   return <p>hello world</p>;
 };
 
 Page.getLayout = function getLayout(page: ReactElement) {
-  return <UserLayout>{page}</UserLayout>;
+  return <AdminLayout>{page}</AdminLayout>;
 };
 
 export default Page;
