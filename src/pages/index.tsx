@@ -39,12 +39,12 @@ const Home: NextPage = () => {
               <h3 className="text-2xl font-bold">Documentation →</h3>
               <div className="text-lg">
                 Learn more about Create T3 App, the libraries it uses, and how
-                to deploy dfwfrwgwrgwgw.
+                to deploy it.
               </div>
             </Link>
           </div>
           <p className="text-2xl text-white">
-            {hello.data ? hello.data.greeting : "Loading"}
+            {hello.data ? hello.data.greeting : "Loading tRPC query..."}
           </p>
         </div>
       </main>
