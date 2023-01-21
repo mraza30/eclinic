@@ -1,4 +1,4 @@
-import AdminLayout from "@/components/layout/AdminLayout";
+import AdminLayout from "@/components/admin/layout/AdminLayout";
 import type { NextPageWithLayout } from "./_app";
 import { ReactElement } from "react";
 
