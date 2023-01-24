@@ -1,13 +1,14 @@
-import type { NextPageWithLayout } from "./_app";
-import { ReactElement } from "react";
-import UserLayout from "@/components/user/layout/UserLayout";
+import React, { ReactElement } from "react";
 
-const Page: NextPageWithLayout = () => {
-  return <p>hello world</p>;
+import { NextPageWithLayout } from "./_app";
+import UserLayout from "@/layouts/User";
+
+const HomePage: NextPageWithLayout = () => {
+  return <></>;
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+HomePage.getLayout = function getLayout(page: ReactElement) {
   return <UserLayout>{page}</UserLayout>;
 };
 
-export default Page;
+export default HomePage;
