@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
-import UserHeader from "../components/headers/User";
+import UserHeader from '../components/headers/User';
 
 export default function UserLayout({ children }: { children: ReactNode }) {
   return (

@@ -10,7 +10,7 @@ export default function UserHeader() {
   const [showHeader, setShowHeader] = useState<Boolean>();
   return (
     <>
-      <nav className="fixed flex h-12 w-full items-center justify-between bg-neutral-800 px-4 font-inter">
+      <nav className="fixed top-0 left-0 flex h-12 w-full items-center justify-between bg-neutral-800 px-4 font-inter">
         {/* Logo Div */}
         <div />
 
