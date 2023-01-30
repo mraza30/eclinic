@@ -1,26 +1,27 @@
-import { ILoginSchema, loginSchema } from '@/zod/loginSchema';
-import React, { ReactElement } from 'react';
+import { type LoginSchema, loginSchema } from '@/zod/loginSchema';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import Link from 'next/link';
-import LoginLayout from '@/layouts/Login';
-import { NextPageWithLayout } from '../_app';
-import UserLayout from '@/layouts/User';
+import React from 'react';
 import clsx from 'clsx';
 import { signIn } from 'next-auth/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-const LoginPage: NextPageWithLayout = () => {
+export function LoginForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ILoginSchema>({
+  } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit: SubmitHandler<ILoginSchema> = (data) => {
-    signIn('credentials', { ...data, callbackUrl: '/' });
+  const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
+    const res = await signIn('credentials', {
+      ...data,
+      redirect: false,
+    });
+    console.log(res);
   };
 
   return (
@@ -68,14 +69,4 @@ const LoginPage: NextPageWithLayout = () => {
       </form>
     </>
   );
-};
-
-LoginPage.getLayout = function getLayout(page: ReactElement) {
-  return (
-    <UserLayout>
-      <LoginLayout>{page}</LoginLayout>
-    </UserLayout>
-  );
-};
-
-export default LoginPage;
+}

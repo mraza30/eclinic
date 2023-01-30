@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
 
-import UserHeader from '../components/headers/User';
+import { StandardHeader } from '../components/headers/Standard';
 
-export default function UserLayout({ children }: { children: ReactNode }) {
+export function StandardLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <main className="relative m-auto min-h-screen max-w-screen-2xl">
-        <UserHeader />
+        <StandardHeader />
         {children}
       </main>
     </>

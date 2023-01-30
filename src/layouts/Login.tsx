@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-export default function LoginLayout({ children }: { children: ReactNode }) {
+export function LoginLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <div className="flex min-h-screen w-full justify-between font-inter">

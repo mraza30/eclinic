@@ -1,28 +1,24 @@
-import { IRegisterSchema, registerSchema } from '@/zod/registerSchema';
-import React, { ReactElement } from 'react';
+import { type RegisterSchema, registerSchema } from '@/zod/registerSchema';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import Link from 'next/link';
-import LoginLayout from '@/layouts/Login';
-import { NextPageWithLayout } from '../_app';
-import UserLayout from '@/layouts/User';
+import React from 'react';
 import { api } from '@/utils/api';
 import clsx from 'clsx';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-const RegisterPage: NextPageWithLayout = () => {
-  const { mutateAsync, isLoading } = api.user.newUser.useMutation();
+export function RegisterForm() {
+  const { mutateAsync } = api.user.newUser.useMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IRegisterSchema>({
+  } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
   });
-  console.log(isLoading);
 
-  const onSubmit: SubmitHandler<IRegisterSchema> = async (data) => {
+  const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
     await mutateAsync(data);
   };
 
@@ -37,12 +33,12 @@ const RegisterPage: NextPageWithLayout = () => {
           <input
             className={clsx(
               'rounded-md border p-2 outline-none',
-              !errors.fullName ? 'border-gray-300' : 'border-red-500'
+              !errors.name ? 'border-gray-300' : 'border-red-500'
             )}
             type="text"
-            {...register('fullName')}
+            {...register('name')}
           />
-          <p className="text-xs text-red-500">{errors.fullName?.message}</p>
+          <p className="text-xs text-red-500">{errors.name?.message}</p>
         </div>
 
         <div className="flex flex-col">
@@ -100,20 +96,10 @@ const RegisterPage: NextPageWithLayout = () => {
           Submit
         </button>
 
-        <Link href="/auth/login" className="mt-4 text-center text-sm">
+        <Link href="/login" className="mt-4 text-center text-sm">
           Already have an account? <span className="text-sky-600">Log in</span>
         </Link>
       </form>
     </>
   );
-};
-
-RegisterPage.getLayout = function getLayout(page: ReactElement) {
-  return (
-    <UserLayout>
-      <LoginLayout>{page}</LoginLayout>
-    </UserLayout>
-  );
-};
-
-export default RegisterPage;
+}
