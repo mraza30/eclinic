@@ -1,10 +1,4 @@
-import {
-  faPowerOff,
-  faSignOut,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Head from 'next/head';
 import Image from 'next/image';
 import React from 'react';
 import { useSession } from 'next-auth/react';
@@ -17,6 +11,9 @@ export function UserHeader() {
   const { data } = useSession();
   return (
     <>
+      <Head>
+        <link rel="shortcut icon" href="logo.svg" type="image/x-icon" />
+      </Head>
       <div className="absolute right-0 w-60 rounded-lg bg-white py-5 px-4 shadow-xl">
         <ul className="flex flex-col gap-2">
           <li className="flex items-center gap-1 overflow-hidden px-1">
@@ -24,10 +21,7 @@ export function UserHeader() {
               {data?.user?.image ? (
                 <Image alt="avatar-image" src={data.user.image} />
               ) : (
-                <FontAwesomeIcon
-                  icon={faUser}
-                  className="text-xl text-neutral-500"
-                />
+                <></>
               )}
             </span>
 
@@ -46,7 +40,7 @@ export function UserHeader() {
           <span className="inline-block w-full border border-neutral-200" />
 
           <li className="flex items-center gap-4">
-            <FontAwesomeIcon icon={faPowerOff} className="text-xl" />
+            <></>
             Logout
           </li>
         </ul>
