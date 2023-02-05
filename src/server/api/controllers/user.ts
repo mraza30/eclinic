@@ -1,36 +1,47 @@
-import { genSalt, hash } from "bcrypt";
+import { genSalt, hash } from 'bcrypt';
 
-import { publicProcedure } from "./../trpc";
-import { registerSchema } from "@/zod/registerSchema";
+import { publicProcedure } from './../trpc';
+import { registerSchema } from '@/zod/register';
 
 export const newUser = publicProcedure
   .input(registerSchema)
   .mutation(async ({ ctx, input }) => {
-    const { password, ...rest } = input;
-
-    const salt = await genSalt(12);
-
-    const hashPassword = await hash(password, salt);
-
-    const user = await ctx.prisma.user.create({
-      data: {
-        password: hashPassword,
-        ...rest,
-      },
-    });
-
-    if (input.role === "PATIENT")
-      await ctx.prisma.patient.create({
-        data: {
-          user: { connect: { id: user.id } },
+    try {
+      const { password, email, phone, ...rest } = input;
+      const userExists = await ctx.prisma.user.findMany({
+        where: {
+          OR: [{ email }, { phone }],
         },
       });
-    else if (input.role === "DOCTOR")
-      await ctx.prisma.doctor.create({
+      if (userExists.length)
+        return {
+          ok: false,
+          status: 400,
+          user: null,
+          error: 'A user with that email or phone already exists',
+        };
+      const user = await ctx.prisma.user.create({
         data: {
-          user: { connect: { id: user.id } },
+          password: await hash(password, await genSalt(12)),
+          email,
+          phone,
+          ...rest,
         },
       });
-
-    return user;
+      if (input.role === 'PATIENT')
+        await ctx.prisma.patient.create({
+          data: {
+            user: { connect: { id: user.id } },
+          },
+        });
+      else if (input.role === 'DOCTOR')
+        await ctx.prisma.doctor.create({
+          data: {
+            user: { connect: { id: user.id } },
+          },
+        });
+      return { ok: true, status: 201, user, error: null };
+    } catch (error) {
+      throw new Error('Error while creating new user');
+    }
   });

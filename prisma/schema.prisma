@@ -24,8 +24,15 @@ enum AdminRoles {
     SUPER
 }
 
+enum Status {
+    PENDING
+    COMPLETED
+    CANCELLED
+    FAILED
+}
+
 model User {
-    id            String   @id @default(cuid())
+    id            String   @id @default(uuid())
     name          String
     email         String   @unique
     phone         String   @unique
@@ -46,15 +53,48 @@ model Admin {
     roles  AdminRoles[]
     active Boolean      @default(false)
     userId String       @id
-    user   User         @relation(fields: [userId], references: [id])
+    user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Patient {
-    userId String @id
-    user   User   @relation(fields: [userId], references: [id])
+    userId      String        @id
+    user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Appointment Appointment[]
+    EMR         EMR?
 }
 
 model Doctor {
-    userId String @id
-    user   User   @relation(fields: [userId], references: [id])
+    userId       String              @id
+    user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Appointment  Appointment[]
+    Specialities SpecialtyOnDoctor[]
+}
+
+model Appointment {
+    id        String   @id @default(uuid())
+    patientId String
+    patient   Patient  @relation(fields: [patientId], references: [userId], onDelete: Cascade)
+    doctorId  String
+    doctor    Doctor   @relation(fields: [doctorId], references: [userId], onDelete: Cascade)
+    DateTime  DateTime
+    status    Status   @default(PENDING)
+}
+
+model EMR {
+    patientId String  @id
+    patient   Patient @relation(fields: [patientId], references: [userId], onDelete: Cascade)
+}
+
+model Speciality {
+    id      String              @id @default(uuid())
+    Doctors SpecialtyOnDoctor[]
+}
+
+model SpecialtyOnDoctor {
+    doctor       Doctor     @relation(fields: [doctorId], references: [userId])
+    doctorId     String
+    speciality   Speciality @relation(fields: [specialityId], references: [id])
+    specialityId String
+
+    @@id([doctorId, specialityId])
 }

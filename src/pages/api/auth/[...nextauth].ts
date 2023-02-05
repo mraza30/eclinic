@@ -1,7 +1,7 @@
 import NextAuth, { AuthOptions } from 'next-auth';
 
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { type LoginSchema } from '@/zod/loginSchema';
+import { type LoginSchema } from '@/zod/login';
 import { compare } from 'bcrypt';
 import { env } from '@/env/server.mjs';
 import { prisma } from '@/server/db';
@@ -35,7 +35,7 @@ export const authOptions: AuthOptions = {
     }),
   ],
   pages: {
-    signIn: '/login',
+    signIn: '/auth/login',
   },
   callbacks: {
     jwt: ({ token, user }) => {
@@ -47,7 +47,9 @@ export const authOptions: AuthOptions = {
       return session;
     },
   },
+  jwt: { maxAge: 60 * 60 * 24 },
   secret: env.NEXTAUTH_SECRET,
   debug: env.NODE_ENV !== 'production',
 };
+
 export default NextAuth(authOptions);
