@@ -6,30 +6,26 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MobileHeader } from './Mobile';
 import { VscThreeBars } from 'react-icons/vsc';
-import { useMobileHeader } from '@/store/header';
 
 export function StandardHeader() {
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
   const [showHospitalsDropdown, setShowHospitalsDropdown] = useState(false);
-  const [mobileHeader, showMobileHeader] = useMobileHeader((state) => [
-    state.mobileHeader,
-    state.showMobileHeader,
-  ]);
+  const [mobileHeader, setMobileHeader] = useState(false);
   return (
     <>
-      <header className="fixed top-0 left-0 flex h-14 w-full items-center justify-between bg-white px-4 font-inter shadow-md md:gap-10">
+      <header className="fixed top-0 left-0 z-50 flex h-14 w-full items-center justify-between bg-white px-4 font-inter shadow-md md:gap-10">
         <Link href="/">
-          <Image
-            className="cursor-pointer"
-            src="../logo.svg"
+          {/* <Image
+            className="h-12 w-auto cursor-pointer"
+            src="/logo.png"
             width="130"
             height="130"
             alt="Logo of E-Clinic"
             priority={true}
-          />
+          /> */}
         </Link>
 
-        <div className="hidden flex-1 gap-4 md:flex">
+        <div className="hidden flex-1 gap-4 font-light md:flex">
           <div
             className="flex cursor-pointer items-center hover:text-sky-500"
             onMouseEnter={() => setShowDoctorsDropdown(true)}
@@ -62,7 +58,7 @@ export function StandardHeader() {
           </Link>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 font-light">
           <Link
             className="hidden hover:text-sky-400 md:block"
             href="/auth/login"
@@ -70,19 +66,23 @@ export function StandardHeader() {
             Log In
           </Link>
           <Link
-            className="rounded-md bg-sky-400 py-2 px-3 text-white hover:bg-opacity-80"
+            className="rounded-md bg-sky-400 py-1.5 px-4 text-white hover:bg-opacity-80"
             href="/auth/register"
           >
             Register
           </Link>
           <VscThreeBars
             className="cursor-pointer text-3xl hover:text-sky-400 md:hidden"
-            onClick={showMobileHeader}
+            onClick={() => setMobileHeader(true)}
           />
         </div>
       </header>
 
-      {<AnimatePresence>{mobileHeader && <MobileHeader />}</AnimatePresence>}
+      {
+        <AnimatePresence>
+          {mobileHeader && <MobileHeader setMobileHeader={setMobileHeader} />}
+        </AnimatePresence>
+      }
     </>
   );
 }

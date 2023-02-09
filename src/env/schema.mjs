@@ -1,4 +1,5 @@
 // @ts-check
+
 import { z } from "zod";
 
 /**
@@ -9,6 +10,9 @@ export const serverSchema = z.object({
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   NEXTAUTH_SECRET: z.string(),
+  TWILIO_ACCOUNT_SID: z.string(),
+  TWILIO_AUTH_TOKEN: z.string(),
+  TWILIO_VERIFY_SID: z.string()
 });
 
 /**
@@ -20,6 +24,9 @@ export const serverEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+  TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+  TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+  TWILIO_VERIFY_SID: process.env.TWILIO_VERIFY_SID,
 };
 
 /**

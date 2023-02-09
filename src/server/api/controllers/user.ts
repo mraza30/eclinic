@@ -1,47 +1,52 @@
 import { genSalt, hash } from 'bcrypt';
+import { protectedProcedure, publicProcedure } from './../trpc';
 
-import { publicProcedure } from './../trpc';
-import { registerSchema } from '@/zod/register';
+import { phoneNumber } from '@/zod/userVerify';
+import { userRegisterSchema } from '@/zod/userRegister';
 
-export const newUser = publicProcedure
-  .input(registerSchema)
+export const addNewUser = publicProcedure
+  .input(userRegisterSchema)
   .mutation(async ({ ctx, input }) => {
-    try {
-      const { password, email, phone, ...rest } = input;
-      const userExists = await ctx.prisma.user.findMany({
+    const { password, phone, ...rest } = input;
+    if (
+      await ctx.prisma.user.findUnique({
         where: {
-          OR: [{ email }, { phone }],
-        },
-      });
-      if (userExists.length)
-        return {
-          ok: false,
-          status: 400,
-          user: null,
-          error: 'A user with that email or phone already exists',
-        };
-      const user = await ctx.prisma.user.create({
-        data: {
-          password: await hash(password, await genSalt(12)),
-          email,
           phone,
-          ...rest,
+        },
+      })
+    )
+      return {
+        ok: false,
+        status: 400,
+        user: null,
+        error: 'A user with that phone number already exists',
+      };
+    const user = await ctx.prisma.user.create({
+      data: {
+        password: await hash(password, await genSalt(12)),
+        phone,
+        ...rest,
+      },
+    });
+    if (user.role === 'PATIENT')
+      await ctx.prisma.patient.create({
+        data: {
+          user: { connect: { id: user.id } },
         },
       });
-      if (input.role === 'PATIENT')
-        await ctx.prisma.patient.create({
-          data: {
-            user: { connect: { id: user.id } },
-          },
-        });
-      else if (input.role === 'DOCTOR')
-        await ctx.prisma.doctor.create({
-          data: {
-            user: { connect: { id: user.id } },
-          },
-        });
-      return { ok: true, status: 201, user, error: null };
-    } catch (error) {
-      throw new Error('Error while creating new user');
-    }
+    else if (user.role === 'DOCTOR')
+      await ctx.prisma.doctor.create({
+        data: {
+          user: { connect: { id: user.id } },
+        },
+      });
+    return { ok: true, status: 201, user, error: null };
+  });
+
+export const checkUserExists = publicProcedure
+  .input(phoneNumber)
+  .mutation(async ({ ctx, input: { phone } }) => {
+    return (await ctx.prisma.user.findUnique({ where: { phone } }))
+      ? true
+      : false;
   });

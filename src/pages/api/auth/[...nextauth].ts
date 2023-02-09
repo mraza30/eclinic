@@ -1,7 +1,7 @@
 import NextAuth, { AuthOptions } from 'next-auth';
 
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { type LoginSchema } from '@/zod/login';
+import { type ILogin } from '@/zod/userlogin';
 import { compare } from 'bcrypt';
 import { env } from '@/env/server.mjs';
 import { prisma } from '@/server/db';
@@ -17,17 +17,15 @@ export const authOptions: AuthOptions = {
       credentials: {},
       async authorize(credentials) {
         try {
-          const { email, password } = credentials as LoginSchema;
+          const { phone, password } = credentials as ILogin;
           const user = await prisma.user.findUnique({
             where: {
-              email,
+              phone,
             },
           });
-          return user
-            ? (await compare(password, user?.password))
-              ? user
-              : null
-            : null;
+          if (user)
+            return (await compare(password, user.password)) ? user : null;
+          return null;
         } catch (error) {
           throw new Error(error as string);
         }

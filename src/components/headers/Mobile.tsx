@@ -4,24 +4,26 @@ import React, { useState } from 'react';
 import { GrClose } from 'react-icons/gr';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useMobileHeader } from '@/store/header';
 
-export function MobileHeader() {
+export function MobileHeader({
+  setMobileHeader,
+}: {
+  setMobileHeader: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
   const [showHospitalsDropdown, setShowHospitalsDropdown] = useState(false);
-  const hideMobileHeader = useMobileHeader((state) => state.hideMobileHeader);
   return (
     <>
       <motion.header
-        className="fixed top-0 right-0 z-20 min-h-screen w-64 bg-white pt-14 font-inter shadow-md md:hidden"
+        className="fixed top-0 right-0 z-50 min-h-screen w-64 bg-white pt-14 font-inter shadow-md md:hidden"
         initial={{ x: 300 }}
         animate={{ x: 0 }}
         exit={{ x: 300 }}
-        transition={{ duration: 0.5, ease: 'linear' }}
+        transition={{ duration: 0.25, ease: 'linear' }}
       >
         <GrClose
           className="absolute top-4 right-4 cursor-pointer text-xl"
-          onClick={hideMobileHeader}
+          onClick={() => setMobileHeader(false)}
         />
         <div className="mx-3 flex flex-col gap-4">
           <Link
@@ -38,7 +40,7 @@ export function MobileHeader() {
           </Link>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2">
+        <div className="mt-10 flex flex-col gap-2 font-light">
           <div
             className="flex cursor-pointer justify-between p-3 hover:bg-gray-200"
             onClick={() => setShowDoctorsDropdown((prev) => !prev)}

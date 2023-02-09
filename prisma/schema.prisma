@@ -32,21 +32,21 @@ enum Status {
 }
 
 model User {
-    id            String   @id @default(uuid())
+    id            String         @id @default(uuid())
     name          String
-    email         String   @unique
-    phone         String   @unique
+    phone         String         @unique
     password      String
+    country       String
     image         String?
-    emailVerified Boolean  @default(false)
-    phoneVerified Boolean  @default(false)
-    blocked       Boolean  @default(false)
+    phoneVerified Boolean        @default(false)
+    blocked       Boolean        @default(false)
     role          UserRole
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
     Admin         Admin?
     Patient       Patient?
     Doctor        Doctor?
+    Verification  Verification[]
 }
 
 model Admin {
@@ -97,4 +97,13 @@ model SpecialtyOnDoctor {
     specialityId String
 
     @@id([doctorId, specialityId])
+}
+
+model Verification {
+    id           String   @id @default(uuid())
+    userId       String
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    code         String
+    DateTime     DateTime @default(now())
+    attemptsLeft Int      @default(5)
 }

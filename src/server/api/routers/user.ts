@@ -1,6 +1,8 @@
-import { createTRPCRouter } from "../trpc";
-import { newUser } from "./../controllers/user";
+import { addNewUser, checkUserExists } from './../controllers/user';
+
+import { createTRPCRouter } from '../trpc';
 
 export const userRouter = createTRPCRouter({
-  newUser,
+  addNewUser,
+  checkUserExists,
 });
